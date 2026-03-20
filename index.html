@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yacine Ferjani — Portfolio BTS SIO SISR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   VARIABLES & RESET
+============================================================ */
+:root {
+  --bg:        #080c14;
+  --bg2:       #0d1220;
+  --surface:   rgba(13,18,32,0.7);
+  --border:    rgba(56,189,248,0.12);
+  --border-glow: rgba(56,189,248,0.35);
+  --blue:      #38bdf8;
+  --blue-dim:  #1e6a8e;
+  --cyan:      #22d3ee;
+  --accent:    #0ea5e9;
+  --purple:    #a78bfa;
+  --green:     #34d399;
+  --red:       #f87171;
+  --yellow:    #fbbf24;
+  --text:      #e2e8f0;
+  --text-muted:#64748b;
+  --text-dim:  #94a3b8;
+  --font-head: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-weight: 300;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* ============================================================
+   KEYFRAMES
+============================================================ */
+@keyframes fade-up   { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+@keyframes slide-in  { from{opacity:0;transform:translateX(-18px)} to{opacity:1;transform:translateX(0)} }
+@keyframes pulse-glow{ 0%,100%{opacity:1;box-shadow:0 0 8px var(--blue)} 50%{opacity:.4;box-shadow:0 0 2px var(--blue)} }
+@keyframes spin      { to{transform:rotate(360deg)} }
+@keyframes flicker   { 0%,100%{opacity:1} 92%{opacity:1} 93%{opacity:.4} 94%{opacity:1} 97%{opacity:.7} 98%{opacity:1} }
+@keyframes scanline  { 0%{transform:translateY(-100%)} 100%{transform:translateY(100vh)} }
+@keyframes float     { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+@keyframes border-spin { to { --angle: 360deg; } }
+@keyframes glow-pulse { 0%,100%{opacity:.5} 50%{opacity:1} }
+
+/* ============================================================
+   CSS TAB NAVIGATION
+============================================================ */
+input[type="radio"].tab-radio { display:none; }
+.tab-panel { display:none; animation: fade-up .5s cubic-bezier(.22,1,.36,1); }
+
+#tab-about:checked       ~ main #about-section,
+#tab-projects:checked    ~ main #projects-section,
+#tab-internships:checked ~ main #internships-section,
+#tab-skills:checked      ~ main #skills-section,
+#tab-veille:checked      ~ main #veille-section,
+#tab-future:checked      ~ main #future-section { display:block; }
+
+/* ============================================================
+   BACKGROUND — Grille hexagonale + gradient mesh
+============================================================ */
+#bg-canvas { position:fixed; top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none; }
+
+.bg-mesh {
+  position:fixed; top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(14,165,233,.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 80%, rgba(34,211,238,.05) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 40% at 60% 30%, rgba(167,139,250,.04) 0%, transparent 50%);
+}
+
+/* Scanline effect subtil */
+.scanline {
+  position:fixed;top:0;left:0;width:100%;height:3px;
+  background: linear-gradient(transparent, rgba(56,189,248,.06), transparent);
+  z-index:2;pointer-events:none;
+  animation: scanline 8s linear infinite;
+  opacity:.4;
+}
+
+/* ============================================================
+   NAVIGATION
+============================================================ */
+nav {
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background: rgba(8,12,20,.85);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 40px rgba(0,0,0,.6), 0 0 80px rgba(56,189,248,.04);
+}
+.nav-inner {
+  max-width: 1200px; margin:0 auto;
+  padding: .9rem 1.5rem;
+  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:.75rem;
+}
+.nav-logo {
+  font-family: var(--font-head);
+  font-weight: 800; font-size: 1.2rem;
+  background: linear-gradient(120deg, var(--blue), var(--cyan));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -.02em;
+  position:relative;
+}
+.nav-logo::after {
+  content: '';
+  position:absolute; bottom:-3px; left:0; right:0; height:1px;
+  background: linear-gradient(90deg, var(--blue), transparent);
+}
+.nav-tabs { display:flex; flex-wrap:wrap; gap:.25rem; }
+.nav-label {
+  font-family: var(--font-mono); font-size:.72rem; font-weight:500; letter-spacing:.04em;
+  padding:.45rem .85rem; border-radius:.4rem; cursor:pointer;
+  color: var(--text-muted); border: 1px solid transparent;
+  transition: all .2s ease; user-select:none; position:relative; overflow:hidden;
+}
+.nav-label::before {
+  content:''; position:absolute; inset:0;
+  background: linear-gradient(135deg, rgba(56,189,248,.08), transparent);
+  opacity:0; transition: opacity .2s;
+}
+.nav-label:hover { color:var(--text-dim); border-color: var(--border); }
+.nav-label:hover::before { opacity:1; }
+
+#tab-about:checked       ~ nav .nav-tabs label[for="tab-about"],
+#tab-projects:checked    ~ nav .nav-tabs label[for="tab-projects"],
+#tab-internships:checked ~ nav .nav-tabs label[for="tab-internships"],
+#tab-skills:checked      ~ nav .nav-tabs label[for="tab-skills"],
+#tab-veille:checked      ~ nav .nav-tabs label[for="tab-veille"],
+#tab-future:checked      ~ nav .nav-tabs label[for="tab-future"] {
+  color: var(--blue);
+  border-color: rgba(56,189,248,.3);
+  background: rgba(56,189,248,.08);
+  box-shadow: 0 0 16px rgba(56,189,248,.15), inset 0 0 12px rgba(56,189,248,.05);
+  text-shadow: 0 0 12px rgba(56,189,248,.5);
+}
+
+/* ============================================================
+   LAYOUT
+============================================================ */
+main {
+  position:relative; z-index:10;
+  max-width:1200px; margin:0 auto;
+  padding: 6.5rem 1.5rem 4rem;
+}
+
+/* ============================================================
+   SECTION HEADERS
+============================================================ */
+.section-title {
+  font-family: var(--font-head); font-weight:800; font-size:clamp(1.8rem,4vw,2.6rem);
+  letter-spacing:-.03em; margin-bottom:2rem;
+  background: linear-gradient(120deg, #e2e8f0 0%, var(--blue) 50%, var(--cyan) 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  position:relative; display:inline-block;
+}
+.section-title::after {
+  content: attr(data-text);
+  position:absolute; left:0; top:0;
+  background: linear-gradient(120deg, transparent 40%, rgba(56,189,248,.15) 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  filter: blur(12px); z-index:-1;
+}
+.section-subtitle {
+  font-family: var(--font-mono); font-size:.8rem; color: var(--text-muted);
+  letter-spacing:.08em; text-transform:uppercase; margin-bottom:2rem;
+  display:flex; align-items:center; gap:.5rem;
+}
+.section-subtitle::before { content:'//'; color: var(--blue); opacity:.6; }
+
+/* ============================================================
+   GLASS CARDS
+============================================================ */
+.glass-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  backdrop-filter: blur(12px);
+  position:relative; overflow:hidden;
+  transition: border-color .3s, transform .3s, box-shadow .3s;
+}
+.glass-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background: linear-gradient(90deg, transparent, rgba(56,189,248,.3), transparent);
+}
+.glass-card:hover {
+  border-color: rgba(56,189,248,.28);
+  box-shadow: 0 8px 40px rgba(0,0,0,.4), 0 0 30px rgba(56,189,248,.06);
+  transform: translateY(-2px);
+}
+
+/* ============================================================
+   ABOUT SECTION
+============================================================ */
+.about-hero {
+  display:grid; grid-template-columns:auto 1fr; gap:2.5rem; align-items:start;
+}
+@media(max-width:640px){ .about-hero { grid-template-columns:1fr; } }
+
+.avatar-ring {
+  width:110px; height:110px; flex-shrink:0;
+  border-radius:50%; padding:3px;
+  background: linear-gradient(135deg, var(--blue), var(--cyan), var(--purple));
+  animation: float 4s ease-in-out infinite;
+}
+.avatar-inner {
+  width:100%; height:100%; border-radius:50%;
+  background: linear-gradient(135deg, #1e3a5f, #0c1a2e);
+  display:flex; align-items:center; justify-content:center;
+  font-family: var(--font-head); font-weight:800; font-size:1.6rem;
+  letter-spacing:-.02em;
+  background-clip:padding-box;
+  color: var(--blue);
+  text-shadow: 0 0 20px rgba(56,189,248,.5);
+}
+
+.about-name {
+  font-family: var(--font-head); font-weight:800; font-size:1.7rem;
+  letter-spacing:-.03em; margin-bottom:.3rem;
+}
+.about-role {
+  font-family: var(--font-mono); font-size:.85rem; color: var(--cyan);
+  letter-spacing:.06em; margin-bottom:1.2rem;
+  display:flex; align-items:center; gap:.5rem;
+}
+.about-role::before { content:'▶'; font-size:.6rem; opacity:.7; }
+.about-text { color: var(--text-dim); line-height:1.7; font-size:.95rem; margin-bottom:.8rem; }
+
+.about-badges { display:flex; flex-wrap:wrap; gap:.6rem; margin:1.2rem 0; }
+.badge {
+  font-family: var(--font-mono); font-size:.7rem; letter-spacing:.05em;
+  padding:.3rem .75rem; border-radius:.3rem;
+  border: 1px solid; background: rgba(255,255,255,.03);
+}
+.badge-blue  { color:var(--blue);   border-color:rgba(56,189,248,.25); }
+.badge-cyan  { color:var(--cyan);   border-color:rgba(34,211,238,.25); }
+.badge-purple{ color:var(--purple); border-color:rgba(167,139,250,.25); }
+.badge-green { color:var(--green);  border-color:rgba(52,211,153,.25); }
+
+.btn-primary {
+  display:inline-flex; align-items:center; gap:.5rem;
+  font-family:var(--font-mono); font-size:.78rem; font-weight:500; letter-spacing:.04em;
+  padding:.6rem 1.2rem; border-radius:.4rem; text-decoration:none;
+  background: linear-gradient(135deg, rgba(14,165,233,.2), rgba(34,211,238,.1));
+  border: 1px solid rgba(56,189,248,.3); color: var(--blue);
+  transition: all .2s; position:relative; overflow:hidden;
+}
+.btn-primary::after {
+  content:''; position:absolute; inset:0;
+  background: linear-gradient(135deg, rgba(56,189,248,.1), transparent);
+  opacity:0; transition:opacity .2s;
+}
+.btn-primary:hover { border-color:rgba(56,189,248,.6); box-shadow:0 0 20px rgba(56,189,248,.2); color:#fff; }
+.btn-primary:hover::after { opacity:1; }
+
+/* Stats dans "À propos" */
+.stat-row { display:flex; flex-wrap:wrap; gap:1rem; margin-top:1.5rem; }
+.stat-box {
+  flex:1; min-width:100px;
+  background: rgba(56,189,248,.05);
+  border: 1px solid rgba(56,189,248,.12);
+  border-radius:.6rem; padding:.8rem 1rem; text-align:center;
+}
+.stat-num { font-family:var(--font-head); font-weight:800; font-size:1.4rem; color:var(--blue); }
+.stat-label { font-family:var(--font-mono); font-size:.65rem; color:var(--text-muted); letter-spacing:.06em; text-transform:uppercase; margin-top:.2rem; }
+
+/* ============================================================
+   PROJECT CARDS
+============================================================ */
+.projects-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1.2rem; }
+
+.project-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius:.85rem; padding:1.5rem;
+  backdrop-filter:blur(12px);
+  position:relative; overflow:hidden;
+  transition: all .3s cubic-bezier(.22,1,.36,1);
+  cursor:default;
+}
+.project-card::after {
+  content:''; position:absolute; top:0; right:0;
+  width:80px; height:80px;
+  background: radial-gradient(circle, rgba(56,189,248,.08) 0%, transparent 70%);
+  border-radius:50%; transform:translate(20px,-20px);
+  transition: transform .3s;
+}
+.project-card:hover { transform:translateY(-4px); border-color:rgba(56,189,248,.3); box-shadow:0 12px 40px rgba(0,0,0,.5), 0 0 20px rgba(56,189,248,.08); }
+.project-card:hover::after { transform:translate(10px,-10px) scale(1.5); }
+
+.project-icon {
+  width:40px; height:40px; border-radius:.5rem; margin-bottom:1rem;
+  background: linear-gradient(135deg, rgba(14,165,233,.2), rgba(34,211,238,.1));
+  border: 1px solid rgba(56,189,248,.2);
+  display:flex; align-items:center; justify-content:center; font-size:1.1rem;
+}
+.project-title { font-family:var(--font-head); font-weight:700; font-size:1rem; margin-bottom:.5rem; letter-spacing:-.01em; }
+.project-desc  { color:var(--text-dim); font-size:.85rem; line-height:1.6; margin-bottom:1rem; }
+.tech-tags { display:flex; flex-wrap:wrap; gap:.4rem; }
+.tech-tag {
+  font-family:var(--font-mono); font-size:.65rem; letter-spacing:.04em;
+  padding:.2rem .6rem; border-radius:.25rem;
+  background:rgba(56,189,248,.08); color:var(--blue); border:1px solid rgba(56,189,248,.2);
+}
+
+/* ============================================================
+   STAGE CARDS
+============================================================ */
+.stage-card { margin-bottom:1.5rem; }
+.stage-header {
+  display:flex; justify-content:space-between; align-items:flex-start;
+  flex-wrap:wrap; gap:1rem; margin-bottom:1.2rem;
+  padding-bottom:1rem; border-bottom:1px solid var(--border);
+}
+.stage-name {
+  font-family:var(--font-head); font-weight:800; font-size:1.5rem;
+  letter-spacing:-.02em; color:#fff;
+}
+.stage-year { font-family:var(--font-mono); font-size:.8rem; color:var(--cyan); margin-top:.2rem; }
+.stage-badge {
+  font-family:var(--font-mono); font-size:.72rem; letter-spacing:.06em; padding:.35rem .9rem;
+  border-radius:.3rem; border:1px solid rgba(56,189,248,.3);
+  background:rgba(56,189,248,.08); color:var(--blue);
+}
+.stage-meta { font-size:.9rem; color:var(--text-dim); margin-bottom:1rem; }
+.stage-meta strong { color:#fff; font-weight:500; }
+.tool-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:.75rem; margin:.75rem 0; }
+.tool-card {
+  background:rgba(255,255,255,.02); border:1px solid rgba(56,189,248,.1);
+  border-radius:.6rem; padding:.85rem 1rem;
+  transition: border-color .2s, background .2s;
+}
+.tool-card:hover { border-color:rgba(56,189,248,.25); background:rgba(56,189,248,.04); }
+.tool-name { font-family:var(--font-mono); font-size:.78rem; font-weight:500; color:var(--cyan); margin-bottom:.35rem; }
+.tool-desc { font-size:.82rem; color:var(--text-dim); line-height:1.5; }
+
+.realisation-box {
+  margin-top:1rem;
+  background: linear-gradient(135deg, rgba(14,165,233,.06), rgba(34,211,238,.03));
+  border:1px solid rgba(56,189,248,.18); border-radius:.7rem; padding:1.2rem;
+}
+.realisation-title { font-family:var(--font-head); font-weight:700; font-size:.95rem; margin-bottom:.7rem; color:#fff; }
+.realisation-list { list-style:none; }
+.realisation-list li {
+  font-size:.84rem; color:var(--text-dim); padding:.3rem 0; padding-left:1rem;
+  position:relative; border-bottom:1px solid rgba(255,255,255,.04);
+}
+.realisation-list li:last-child { border-bottom:none; }
+.realisation-list li::before { content:'›'; position:absolute; left:0; color:var(--blue); font-weight:700; }
+
+/* ============================================================
+   COMPÉTENCES
+============================================================ */
+.skill-block { margin-bottom:1.2rem; }
+.skill-header {
+  background: linear-gradient(135deg, rgba(14,165,233,.12), rgba(34,211,238,.06));
+  border-bottom:1px solid rgba(56,189,248,.15);
+  padding:1rem 1.2rem;
+  display:flex; align-items:center; gap:.75rem;
+}
+.skill-num {
+  font-family:var(--font-mono); font-size:.75rem; font-weight:500;
+  width:26px; height:26px; border-radius:50%; flex-shrink:0;
+  background:rgba(56,189,248,.15); border:1px solid rgba(56,189,248,.3);
+  display:flex; align-items:center; justify-content:center;
+  color:var(--blue);
+}
+.skill-title { font-family:var(--font-head); font-weight:700; font-size:.95rem; }
+.skill-subtitle { font-size:.75rem; color:var(--text-muted); margin-top:.15rem; font-style:italic; }
+
+.skill-item {
+  display:flex; align-items:flex-start; gap:.9rem;
+  padding:.85rem 1.2rem; border-bottom:1px solid rgba(255,255,255,.04);
+  transition: background .2s;
+}
+.skill-item:last-child { border-bottom:none; }
+.skill-item:hover { background:rgba(56,189,248,.03); }
+
+.skill-dot {
+  width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:.35rem;
+}
+.dot-blue   { background:var(--blue);   box-shadow:0 0 8px rgba(56,189,248,.6); }
+.dot-cyan   { background:var(--cyan);   box-shadow:0 0 8px rgba(34,211,238,.6); }
+.dot-purple { background:var(--purple); box-shadow:0 0 8px rgba(167,139,250,.6); }
+
+.skill-realisation { font-size:.85rem; color:#cbd5e1; font-weight:400; line-height:1.5; }
+.skill-meta { font-family:var(--font-mono); font-size:.7rem; color:var(--text-muted); margin-top:.2rem; }
+
+.legend { display:flex; flex-wrap:wrap; gap:1rem; margin-bottom:1.5rem; }
+.legend-item { display:flex; align-items:center; gap:.5rem; font-family:var(--font-mono); font-size:.72rem; color:var(--text-muted); }
+.legend-dot { width:8px; height:8px; border-radius:50%; }
+
+/* ============================================================
+   VEILLE
+============================================================ */
+.veille-theme-card {
+  background: linear-gradient(135deg, rgba(14,165,233,.08), rgba(34,211,238,.04));
+  border:1px solid rgba(56,189,248,.2); border-radius:.85rem; padding:1.5rem;
+  margin-bottom:1.5rem; position:relative; overflow:hidden;
+}
+.veille-theme-card::before {
+  content:''; position:absolute; top:-40px; right:-40px;
+  width:140px; height:140px; border-radius:50%;
+  background: radial-gradient(circle, rgba(56,189,248,.08), transparent 70%);
+}
+.veille-why {
+  background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.07);
+  border-radius:.6rem; padding:1rem; margin-top:1rem;
+}
+.veille-why-title { font-family:var(--font-mono); font-size:.72rem; color:var(--text-muted); letter-spacing:.06em; text-transform:uppercase; margin-bottom:.5rem; }
+
+.sources-row { display:flex; flex-wrap:wrap; gap:.6rem; margin-top:1.2rem; }
+.source-chip {
+  font-family:var(--font-mono); font-size:.72rem; letter-spacing:.04em;
+  padding:.3rem .8rem; border-radius:.3rem;
+  background:rgba(56,189,248,.07); border:1px solid rgba(56,189,248,.18); color:var(--blue);
+  transition: all .2s;
+}
+.source-chip:hover { background:rgba(56,189,248,.14); border-color:rgba(56,189,248,.4); }
+
+/* Flux news */
+.flux-header {
+  display:flex; align-items:center; justify-content:space-between;
+  flex-wrap:wrap; gap:1rem; margin-bottom:1.5rem;
+}
+.live-indicator { display:flex; align-items:center; gap:.6rem; }
+.live-dot { width:8px; height:8px; border-radius:50%; background:var(--green); animation: pulse-glow 1.5s infinite; }
+.flux-title { font-family:var(--font-head); font-weight:700; font-size:1.1rem; }
+.last-update { font-family:var(--font-mono); font-size:.68rem; color:var(--text-muted); margin-left:.5rem; }
+
+.filter-row { display:flex; flex-wrap:wrap; gap:.4rem; align-items:center; }
+.filter-btn {
+  font-family:var(--font-mono); font-size:.68rem; letter-spacing:.04em;
+  padding:.3rem .7rem; border-radius:.3rem; border:1px solid rgba(255,255,255,.08);
+  color:var(--text-muted); background:transparent; cursor:pointer; transition:all .2s;
+}
+.filter-btn:hover { border-color:rgba(56,189,248,.3); color:var(--blue); }
+.filter-btn.active-filter { background:rgba(56,189,248,.12); border-color:rgba(56,189,248,.35); color:var(--blue); }
+.refresh-btn {
+  font-family:var(--font-mono); font-size:.68rem; color:var(--text-muted);
+  background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1);
+  padding:.3rem .7rem; border-radius:.3rem; cursor:pointer; transition:all .2s;
+  display:flex; align-items:center; gap:.3rem;
+}
+.refresh-btn:hover { color:#fff; border-color:rgba(255,255,255,.2); }
+
+.news-card {
+  background:rgba(255,255,255,.025); border:1px solid rgba(56,189,248,.08);
+  border-radius:.7rem; padding:1.1rem 1.2rem;
+  transition: all .25s ease; margin-bottom:.7rem;
+  position:relative; overflow:hidden;
+}
+.news-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:2px; background:transparent; transition:background .25s; }
+.news-card:hover { border-color:rgba(56,189,248,.25); transform:translateX(3px); background:rgba(56,189,248,.04); }
+.news-card:hover::before { background:var(--blue); }
+
+.news-header { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:.5rem; margin-bottom:.6rem; }
+.news-tags { display:flex; gap:.4rem; align-items:center; flex-wrap:wrap; }
+.news-tag { font-family:var(--font-mono); font-size:.65rem; padding:.2rem .55rem; border-radius:.25rem; border:1px solid; }
+.news-source { font-family:var(--font-mono); font-size:.68rem; color:var(--text-muted); }
+.news-date   { font-family:var(--font-mono); font-size:.65rem; color:rgba(100,116,139,.6); }
+.news-impact { font-family:var(--font-mono); font-size:.68rem; font-weight:500; }
+.news-title  { font-family:var(--font-head); font-weight:600; font-size:.92rem; color:#fff; margin-bottom:.45rem; letter-spacing:-.01em; }
+.news-summary{ font-size:.82rem; color:var(--text-dim); line-height:1.6; }
+.news-link   { font-family:var(--font-mono); font-size:.7rem; color:var(--blue); text-decoration:none; opacity:.7; transition:opacity .2s; display:inline-block; margin-top:.6rem; }
+.news-link:hover { opacity:1; }
+
+.tag-phishing     { background:rgba(248,113,113,.12); color:#fca5a5; border-color:rgba(248,113,113,.3); }
+.tag-dmarc        { background:rgba(56,189,248,.12);  color:var(--blue); border-color:rgba(56,189,248,.3); }
+.tag-usurpation   { background:rgba(251,191,36,.1);   color:var(--yellow); border-color:rgba(251,191,36,.3); }
+.tag-compromission{ background:rgba(167,139,250,.1);  color:var(--purple); border-color:rgba(167,139,250,.3); }
+.tag-contre       { background:rgba(52,211,153,.1);   color:var(--green);  border-color:rgba(52,211,153,.3); }
+
+.spinner { border:2px solid rgba(56,189,248,.15); border-top-color:var(--blue); border-radius:50%; width:20px; height:20px; animation:spin .8s linear infinite; display:inline-block; }
+
+/* ============================================================
+   FUTUR
+============================================================ */
+.option-card {
+  border-radius:.85rem; padding:1.5rem; margin-bottom:1rem;
+  position:relative; overflow:hidden; transition:all .3s;
+}
+.option-blue {
+  background: linear-gradient(135deg, rgba(14,165,233,.08), rgba(34,211,238,.04));
+  border:1px solid rgba(56,189,248,.2);
+}
+.option-purple {
+  background: linear-gradient(135deg, rgba(167,139,250,.08), rgba(14,165,233,.04));
+  border:1px solid rgba(167,139,250,.25);
+}
+.option-card:hover { transform:translateY(-3px); box-shadow:0 10px 30px rgba(0,0,0,.4); }
+.option-num {
+  font-family:var(--font-mono); font-size:.7rem; letter-spacing:.08em; text-transform:uppercase;
+  padding:.25rem .6rem; border-radius:.25rem; margin-bottom:.75rem; display:inline-block;
+}
+.opt-num-blue   { background:rgba(56,189,248,.12); border:1px solid rgba(56,189,248,.25); color:var(--blue); }
+.opt-num-purple { background:rgba(167,139,250,.12); border:1px solid rgba(167,139,250,.25); color:var(--purple); }
+.option-title { font-family:var(--font-head); font-weight:700; font-size:1rem; letter-spacing:-.01em; margin-bottom:.5rem; }
+.option-desc  { font-size:.85rem; color:var(--text-dim); line-height:1.65; margin-bottom:.9rem; }
+.option-chips { display:flex; flex-wrap:wrap; gap:.4rem; }
+.chip-blue   { font-family:var(--font-mono); font-size:.67rem; padding:.2rem .6rem; border-radius:.25rem; background:rgba(56,189,248,.08); border:1px solid rgba(56,189,248,.2); color:var(--blue); }
+.chip-cyan   { font-family:var(--font-mono); font-size:.67rem; padding:.2rem .6rem; border-radius:.25rem; background:rgba(34,211,238,.08); border:1px solid rgba(34,211,238,.2); color:var(--cyan); }
+.chip-purple { font-family:var(--font-mono); font-size:.67rem; padding:.2rem .6rem; border-radius:.25rem; background:rgba(167,139,250,.08); border:1px solid rgba(167,139,250,.2); color:var(--purple); }
+
+/* Objectif professionnel */
+.goal-banner {
+  background: linear-gradient(135deg, rgba(14,165,233,.1), rgba(34,211,238,.05), rgba(167,139,250,.05));
+  border:1px solid rgba(56,189,248,.2); border-radius:1rem; padding:2rem; text-align:center;
+  position:relative; overflow:hidden;
+}
+.goal-banner::before {
+  content:''; position:absolute; top:-60px; left:50%; transform:translateX(-50%);
+  width:300px; height:120px; border-radius:50%;
+  background: radial-gradient(ellipse, rgba(56,189,248,.1), transparent 70%);
+}
+.goal-pill {
+  display:inline-block; padding:.65rem 1.8rem; border-radius:2rem; margin:.3rem;
+  font-family:var(--font-head); font-weight:700; font-size:1.05rem; letter-spacing:-.01em;
+}
+.goal-pill-1 { background:linear-gradient(135deg, rgba(14,165,233,.25), rgba(34,211,238,.15)); border:1px solid rgba(56,189,248,.35); color:#fff; }
+.goal-pill-2 { background:linear-gradient(135deg, rgba(34,211,238,.2), rgba(14,165,233,.12)); border:1px solid rgba(34,211,238,.3); color:#fff; }
+.goal-or { font-family:var(--font-mono); font-size:.78rem; color:var(--text-muted); margin:.3rem 0; display:block; }
+.goal-desc { font-size:.88rem; color:var(--text-dim); line-height:1.7; max-width:600px; margin:1rem auto 0; }
+
+/* Timeline */
+.timeline { display:grid; grid-template-columns:repeat(2,1fr); gap:.75rem; margin-top:1.5rem; }
+@media(min-width:640px){ .timeline { grid-template-columns:repeat(4,1fr); } }
+.timeline-item {
+  background:rgba(255,255,255,.025); border:1px solid rgba(255,255,255,.07);
+  border-radius:.65rem; padding:1rem; text-align:center;
+  transition: border-color .2s, background .2s;
+}
+.timeline-item:hover { border-color:rgba(56,189,248,.2); background:rgba(56,189,248,.04); }
+.timeline-year { font-family:var(--font-head); font-weight:800; font-size:1.3rem; margin-bottom:.3rem; }
+.timeline-label{ font-size:.75rem; color:var(--text-dim); line-height:1.4; }
+.timeline-sub  { font-family:var(--font-mono); font-size:.65rem; color:var(--text-muted); margin-top:.2rem; }
+
+/* ============================================================
+   FOOTER
+============================================================ */
+footer {
+  position:relative; z-index:10;
+  border-top:1px solid var(--border);
+  padding:1.5rem; text-align:center;
+  font-family:var(--font-mono); font-size:.72rem; color:var(--text-muted);
+}
+footer span { color:var(--blue); }
+</style>
+</head>
+<body>
+
+<!-- Radio buttons navigation -->
+<input type="radio" class="tab-radio" id="tab-about"       name="tabs" checked>
+<input type="radio" class="tab-radio" id="tab-projects"    name="tabs">
+<input type="radio" class="tab-radio" id="tab-internships" name="tabs">
+<input type="radio" class="tab-radio" id="tab-skills"      name="tabs">
+<input type="radio" class="tab-radio" id="tab-veille"      name="tabs">
+<input type="radio" class="tab-radio" id="tab-future"      name="tabs">
+
+<canvas id="bg-canvas"></canvas>
+<div class="bg-mesh"></div>
+<div class="scanline"></div>
+
+<!-- Navigation -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">Yacine Ferjani</div>
+    <div class="nav-tabs">
+      <label for="tab-about"       class="nav-label">À propos</label>
+      <label for="tab-projects"    class="nav-label">Projets</label>
+      <label for="tab-internships" class="nav-label">Stages</label>
+      <label for="tab-skills"      class="nav-label">Compétences</label>
+      <label for="tab-veille"      class="nav-label">Veille</label>
+      <label for="tab-future"      class="nav-label">Futur</label>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+<!-- ===================================================== À PROPOS -->
+<div id="about-section" class="tab-panel">
+  <div class="section-subtitle">Portfolio BTS SIO SISR — SESSION 2025</div>
+  <h1 class="section-title" data-text="À propos de moi">À propos de moi</h1>
+
+  <div class="glass-card" style="padding:2rem 2.5rem; margin-bottom:1.5rem;">
+    <div class="about-hero">
+      <div class="avatar-ring">
+        <div class="avatar-inner">YF</div>
+      </div>
+      <div>
+        <div class="about-name">Yacine Ferjani</div>
+        <div class="about-role">Étudiant BTS SIO — option SISR</div>
+        <p class="about-text">Actuellement en deuxième année de BTS Services Informatiques aux Organisations (SIO) option Solutions d'Infrastructure, Systèmes et Réseaux au <strong style="color:#cbd5e1">Lycée Voillaume, Aulnay-sous-Bois</strong>.</p>
+        <p class="about-text">Passionné par la <strong style="color:var(--cyan)">cybersécurité</strong> et les <strong style="color:var(--cyan)">infrastructures réseau</strong>, je développe mes compétences à travers des projets pratiques et des expériences professionnelles en entreprise.</p>
+        <div class="about-badges">
+          <span class="badge badge-blue">ZeroTrust</span>
+          <span class="badge badge-cyan">DMARC / SPF / DKIM</span>
+          <span class="badge badge-purple">Cybersécurité</span>
+          <span class="badge badge-blue">Cisco / VLAN</span>
+          <span class="badge badge-green">Linux / Windows Server</span>
+          <span class="badge badge-cyan">Active Directory</span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.2rem;">
+          <a href="mailto:ferjani.yacine.sio@gmail.com" class="btn-primary">✉ Contact</a>
+          <a href="http://linkedin.com/in/yacine-ferjani" target="_blank" class="btn-primary">↗ LinkedIn</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat-box"><div class="stat-num">2</div><div class="stat-label">Années BTS</div></div>
+    <div class="stat-box"><div class="stat-num">2</div><div class="stat-label">Stages réalisés</div></div>
+    <div class="stat-box"><div class="stat-num">6+</div><div class="stat-label">Projets techniques</div></div>
+    <div class="stat-box"><div class="stat-num">N°1</div><div class="stat-label">Objectif : Ingénieur Cyber</div></div>
+  </div>
+</div>
+
+<!-- ===================================================== PROJETS -->
+<div id="projects-section" class="tab-panel">
+  <div class="section-subtitle">BTS SIO SISR — Réalisations techniques</div>
+  <h2 class="section-title" data-text="Mes Projets">Mes Projets</h2>
+  <div class="projects-grid">
+
+    <div class="project-card">
+      <div class="project-icon">🖥️</div>
+      <div class="project-title">Configuration Serveurs</div>
+      <div class="project-desc">Configuration de serveurs Windows Server 2019 et Linux (Debian, Ubuntu) en environnement virtualisé VirtualBox.</div>
+      <div class="tech-tags">
+        <span class="tech-tag">VirtualBox</span><span class="tech-tag">Windows Server</span><span class="tech-tag">Linux</span><span class="tech-tag">Debian</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-icon">🗂️</div>
+      <div class="project-title">Active Directory & GPO</div>
+      <div class="project-desc">Mise en place d'Active Directory et configuration des Stratégies de Groupe pour la gestion centralisée des utilisateurs.</div>
+      <div class="tech-tags">
+        <span class="tech-tag">Active Directory</span><span class="tech-tag">GPO</span><span class="tech-tag">Windows Server</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-icon">🛡️</div>
+      <div class="project-title">Sécurité Réseau</div>
+      <div class="project-desc">Configuration de pare-feu avec pfSense, mise en place de RAID 5 pour la tolérance aux pannes et la continuité de service.</div>
+      <div class="tech-tags">
+        <span class="tech-tag">pfSense</span><span class="tech-tag">RAID 5</span><span class="tech-tag">Firewall</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-icon">🌐</div>
+      <div class="project-title">Réseaux Cisco</div>
+      <div class="project-desc">Configuration de switches, création de VLANs et routage inter-VLAN sur simulateur Cisco Packet Tracer.</div>
+      <div class="tech-tags">
+        <span class="tech-tag">Cisco</span><span class="tech-tag">VLAN</span><span class="tech-tag">Packet Tracer</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-icon">📡</div>
+      <div class="project-title">Supervision Réseau</div>
+      <div class="project-desc">Mise en place d'une solution de supervision réseau avec Centreon pour le monitoring en temps réel des équipements.</div>
+      <div class="tech-tags">
+        <span class="tech-tag">Centreon</span><span class="tech-tag">Monitoring</span><span class="tech-tag">SNMP</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-icon">⚙️</div>
+      <div class="project-title">Développement & BDD</div>
+      <div class="project-desc">Programmation Python pour l'automatisation de tâches réseau et création de bases de données relationnelles SQL.</div>
+      <div class="tech-tags">
+        <span class="tech-tag">Python</span><span class="tech-tag">SQL</span><span class="tech-tag">Automatisation</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===================================================== STAGES -->
+<div id="internships-section" class="tab-panel">
+  <div class="section-subtitle">Expériences professionnelles</div>
+  <h2 class="section-title" data-text="Mes Stages">Mes Stages</h2>
+
+  <!-- Stage 1 -->
+  <div class="glass-card stage-card" style="padding:1.8rem 2rem; margin-bottom:1.5rem;">
+    <div class="stage-header">
+      <div>
+        <div class="stage-name">ACKnowledge</div>
+        <div class="stage-year">▶ Stage de Première Année · 02/06/2025 – 27/06/2025</div>
+      </div>
+      <span class="stage-badge">Cybersécurité</span>
+    </div>
+    <p class="stage-meta"><strong>Type :</strong> Intégrateur de solutions de cybersécurité</p>
+    <p class="stage-meta"><strong>Objectif :</strong> Étude et mise en pratique du modèle ZeroTrust</p>
+
+    <div class="tool-grid">
+      <div class="tool-card">
+        <div class="tool-name">Netskope</div>
+        <div class="tool-desc">Plateforme SASE intégrant CASB, SWG et ZTNA pour sécuriser l'accès aux applications cloud dans une approche Zero Trust.</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-name">BeyondTrust</div>
+        <div class="tool-desc">Solution PAM pour sécuriser et gérer les accès privilégiés avec le principe du moindre privilège.</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-name">Illumio</div>
+        <div class="tool-desc">Plateforme de microsegmentation Zero Trust pour contenir les cybermenaces et empêcher la propagation latérale.</div>
+      </div>
+    </div>
+
+    <div class="realisation-box">
+      <div class="realisation-title">Réalisation Technique — Maquette ZeroTrust sous VMware</div>
+      <ul class="realisation-list">
+        <li>Configuration d'un client Windows avec 3 agents (Netskope, BeyondTrust, Illumio)</li>
+        <li>Déploiement de 2 serveurs Linux isolés</li>
+        <li>Configuration des communications client↔serveurs avec isolation inter-serveurs</li>
+        <li>Application des politiques de segmentation Zero Trust</li>
+        <li>Gestion de politiques SASI (Proxy + Firewall)</li>
+        <li>Gestion granulaire des politiques des utilisateurs</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Stage 2 -->
+  <div class="glass-card stage-card" style="padding:1.8rem 2rem;">
+    <div class="stage-header">
+      <div>
+        <div class="stage-name">Tereos</div>
+        <div class="stage-year">▶ Stage de Deuxième Année · 19/01/2026 – 13/03/2026</div>
+      </div>
+      <span class="stage-badge">Cybersécurité</span>
+    </div>
+    <p class="stage-meta"><strong>Type :</strong> Leader mondial de la transformation de betteraves, céréales et pommes de terre</p>
+
+    <div class="tool-grid">
+      <div class="tool-card">
+        <div class="tool-name">Lutte contre la fraude et contrôle de la légitimité des emails reçus par les utilisateurs</div>
+        <div class="tool-desc">Mise en œuvre de protocoles SPF, DKIM, DMARC. Sensibilisation au phishing. Utilisation de Valimail, DMARCian, Message Trace.</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-name">Gestion incidents de sécurité</div>
+        <div class="tool-desc">Traitement de tickets via ServiceNow/GLPI, analyse d'alertes XDR, investigation de menaces et mesures correctives.</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-name">Analyse & Surveillance</div>
+        <div class="tool-desc">Outils : Entra, Whois, Virus Total, XDR. Participation aux CAB hebdomadaires Infrastructures & Cybersécurité.</div>
+      </div>
+    </div>
+
+    <div class="realisation-box">
+      <div class="realisation-title">Réalisations clés</div>
+      <ul class="realisation-list">
+        <li>Découverte d'outils de gestion de tickets : ServiceNow, GLPI, Service X, XDR</li>
+        <li>Mener des analyses cyber : Message Trace, Entra, Whois, Virus Total, DMARCian</li>
+        <li>Spectateur d'un pentest sur le SI de Tereos</li>
+        <li>Traitement des emails et boîtes électroniques des utilisateurs</li>
+        <li>Listage de tous les incidents et RITM dans un tableau Excel de suivi</li>
+        <li>Lancement de scans sur les machines des utilisateurs</li>
+        <li>Lancement d'une campagne de phishing simulée pour tester les utilisateurs</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ===================================================== COMPÉTENCES -->
+<div id="skills-section" class="tab-panel">
+  <div class="section-subtitle">Référentiel BTS SIO SISR — Épreuve E5</div>
+  <h2 class="section-title" data-text="Compétences">Compétences</h2>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot dot-blue"></div>Formation (BTS)</div>
+    <div class="legend-item"><div class="legend-dot dot-cyan"></div>Stage 1 — ACKnowledge (2025)</div>
+    <div class="legend-item"><div class="legend-dot dot-purple"></div>Stage 2 — Tereos (2026)</div>
+  </div>
+
+  <!-- BLOC 1 -->
+  <div class="glass-card skill-block">
+    <div class="skill-header">
+      <div class="skill-num">①</div>
+      <div><div class="skill-title">Gérer le patrimoine informatique</div><div class="skill-subtitle">Recenser et identifier les ressources · Exploiter des référentiels · Gérer les sauvegardes · Vérifier la continuité de service</div></div>
+    </div>
+    <div class="skill-item"><div class="skill-dot dot-blue"></div><div><div class="skill-realisation">Sécurité réseau (Firewall via pfSense, RAID 5)</div><div class="skill-meta">05/09/2024 – 31/05/2026 · Formation</div></div></div>
+    <div class="skill-item"><div class="skill-dot dot-blue"></div><div><div class="skill-realisation">Supervision réseau via Centreon</div><div class="skill-meta">05/09/2024 – 31/05/2026 · Formation</div></div></div>
+    <div class="skill-item"><div class="skill-dot dot-blue"></div><div><div class="skill-realisation">Configuration de switchs, VLAN et routage inter-VLAN sur Cisco Packet Tracer</div><div class="skill-meta">05/09/2024 – 31/05/2026 · Formation</div></div></div>
+    <div class="skill-item"><div class="skill-dot dot-cyan"></div><div><div class="skill-realisation">Gestion de politiques SASI (Proxy + Firewall)</div><div class="skill-meta">02/06/2025 – 06/06/2025 · Stage 1 ACKnowledge</div></div></div>
+    <div class="skill-item"><div class="skill-dot dot-cyan"></div><div><div class="skill-realisation">Gestion granulaire des politiques des utilisateurs</div><div class="skill-meta">09/06/2025 – 16/06/2025 · Stage 1 ACKnowledge</div></div></div>
+    <div class="skill-item"><div class="skill-dot dot-cyan"></div><div><div class="skill-realisation">Découverte et approfondissement de principes (Modèle OSI, SOC, ZeroTrust)</div><div class="skill-meta">02/06/2025 – 27/06/2025 · Stage 1 ACKnowledge</div></div></div>
+    <div class="skill-item"><div class="skill-dot dot-purple"></div><div><div class="skill-realisation">Découverte d'outils d'analyse cyber (Message Trace, Entra, Whois, Virus Total, Valimail, DMARCian, XDR…)</div><div class="skill-meta">19/01/2026 – 06/02/2026 · Stage 2 Tereos</div></div></div>
+    <div class="skill-item"><div class="skill-dot dot-purple"></div><div><div class="skill-realisation">Lancement de scans sur les machines des utilisateurs de Tereos</div><div class="skill-meta">02/03/2026 – 13/03/2026 · Stage 2 Tereos</div></div></div>
+    <div class="skill-item"><div class="skill-dot dot-purple"></div><div><div class="skill-realisation">Lancement d'une campagne de phishing simulée afin de tester les utilisateurs</div><div class="skill-meta">06/03/2026 – 13/03/2026 · Stage 2 Tereos</div></div></div>
+  </div>
+
+  <!-- BLOC 2 -->
+  <div class="glass-card skill-block">
+    <div class="skill-header">
+      <div class="skill-num">②</div>
+      <div><div class="skill-title">Répondre aux incidents et aux demandes d'assistance</div><div class="skill-subtitle">Collecter et orienter les demandes · Traiter les demandes réseau, système et applicatives</div></div>
+    </div>
+    <div class="skill-item"><div class="skill-dot dot-blue"></div><div><div class="skill-realisation">Sécurité réseau (Firewall via pfSense, RAID 5)</div><div class="skill-meta">05/09/2024 – 31/05/2026 · Formation</div></div></div>
+    <div class="skill-item"><div class="skill-dot dot-blue"></div><div><div class="skill-realisation">Supervision réseau via Centreon</div><div class="skill-meta">05/09/2024 – 31/05/2026 · Formation</div></div></div>
+    <div class="skill-item"><div class="skill-dot dot-cyan"></div><div><div class="skill-realisation">Gestion de politiques SASI (Proxy + Firewall)</div><div class="skill-meta">02/06/2025 – 06/06/2025 · Stage 1 ACKnowledge</div></div></div>
+    <div class="skill-item"><div class="skill-dot dot-cyan"></div><div><div class="skill-realisation">Gestion granulaire des politiques des utilisateurs</div><div class="skill-meta">09/06/2025 – 16/06/2025 · Stage 1 ACKnowledge</div></div></div>
+    <div class="skill-item"><div class="skill-dot dot-purple"></div><div><div class="skill-realisation">Découverte d'outils de gestion de tickets incidents et RITM (ServiceNow, GLPI, Service X, XDR)</div><div class="skill-meta">19/01/2026 – 23/01/2026 · Stage 2 Tereos</div></div></div>
+    <div class="skill-item"><div class="skill-dot dot-purple"></div><div><div class="skill-realisation">Découverte d'outils d'analyse cyber (Message Trace, Entra, Whois, Virus Total, DMARCian…)</div><div class="skill-meta">19/01/2026 – 06/02/2026 · Stage 2 Tereos</div></div></div>
+    <div class="skill-item"><div class="skill-dot dot-purple"></div><div><div class="skill-realisation">Listage de tous les incidents et RITM dans un tableau Excel de suivi</div><div class="skill-meta">02/02/2026 – 13/03/2026 · Stage 2 Tereos</div></div></div>
+  </div>
+
+  <!-- BLOC 3 -->
+  <div class="glass-card skill-block">
+    <div class="skill-header">
+      <div class="skill-num">③</div>
+      <div><div class="skill-title">Développer la présence en ligne de l'organisation</div><div class="skill-subtitle">Valoriser l'image numérique · Référencer les services en ligne · Participer à l'évolution d'un site Web</div></div>
+    </div>
+    <div class="skill-item"><div class="skill-dot dot-blue"></div><div><div class="skill-realisation">Conception d'un portfolio retraçant les deux années de BTS et les stages effectués</div><div class="skill-meta">05/09/2024 – 31/05/2026 · Formation</div></div></div>
+    <div class="skill-item"><div class="skill-dot dot-purple"></div><div><div class="skill-realisation">Spectateur d'un pentest réalisé afin de détecter les failles dans le SI de Tereos</div><div class="skill-meta">02/02/2026 – 06/02/2026 · Stage 2 Tereos</div></div></div>
+  </div>
+
+  <!-- BLOC 4 -->
+  <div class="glass-card skill-block">
+    <div class="skill-header">
+      <div class="skill-num">④</div>
+      <div><div class="skill-title">Travailler en mode projet</div><div class="skill-subtitle">Analyser les objectifs · Planifier les activités · Évaluer les indicateurs de suivi</div></div>
+    </div>
+    <div class="skill-item"><div class="skill-dot dot-blue"></div><div><div class="skill-realisation">Conception d'un portfolio retraçant les deux années de BTS et les stages effectués</div><div class="skill-meta">05/09/2024 – 31/05/2026 · Formation</div></div></div>
+    <div class="skill-item"><div class="skill-dot dot-cyan"></div><div><div class="skill-realisation">Mise en place d'une maquette ZeroTrust (VMware)</div><div class="skill-meta">02/06/2025 – 27/06/2025 · Stage 1 ACKnowledge</div></div></div>
+    <div class="skill-item"><div class="skill-dot dot-purple"></div><div><div class="skill-realisation">Traitement des emails et boîtes électroniques des utilisateurs</div><div class="skill-meta">02/02/2026 – 13/03/2026 · Stage 2 Tereos</div></div></div>
+    <div class="skill-item"><div class="skill-dot dot-purple"></div><div><div class="skill-realisation">Listage de tous les incidents et RITM dans un tableau Excel de suivi</div><div class="skill-meta">02/02/2026 – 13/03/2026 · Stage 2 Tereos</div></div></div>
+    <div class="skill-item"><div class="skill-dot dot-purple"></div><div><div class="skill-realisation">Lancement d'une campagne de phishing simulée pour tester les utilisateurs</div><div class="skill-meta">06/03/2026 – 13/03/2026 · Stage 2 Tereos</div></div></div>
+  </div>
+
+  <!-- BLOC 5 -->
+  <div class="glass-card skill-block">
+    <div class="skill-header">
+      <div class="skill-num">⑤</div>
+      <div><div class="skill-title">Mettre à disposition des utilisateurs un service informatique</div><div class="skill-subtitle">Tester l'intégration · Déployer un service · Accompagner les utilisateurs</div></div>
+    </div>
+    <div class="skill-item"><div class="skill-dot dot-blue"></div><div><div class="skill-realisation">Configuration de serveurs Windows 2019 et Linux (Debian, Ubuntu) via VirtualBox</div><div class="skill-meta">05/09/2024 – 31/05/2026 · Formation</div></div></div>
+    <div class="skill-item"><div class="skill-dot dot-blue"></div><div><div class="skill-realisation">Sécurité réseau (Firewall via pfSense, RAID 5)</div><div class="skill-meta">05/09/2024 – 31/05/2026 · Formation</div></div></div>
+    <div class="skill-item"><div class="skill-dot dot-blue"></div><div><div class="skill-realisation">Supervision réseau via Centreon</div><div class="skill-meta">05/09/2024 – 31/05/2026 · Formation</div></div></div>
+    <div class="skill-item"><div class="skill-dot dot-blue"></div><div><div class="skill-realisation">Mise en place d'Active Directory et configuration des GPO</div><div class="skill-meta">05/09/2024 – 31/05/2026 · Formation</div></div></div>
+    <div class="skill-item"><div class="skill-dot dot-blue"></div><div><div class="skill-realisation">Configuration de switchs, VLAN et routage inter-VLAN sur Cisco Packet Tracer</div><div class="skill-meta">05/09/2024 – 31/05/2026 · Formation</div></div></div>
+    <div class="skill-item"><div class="skill-dot dot-blue"></div><div><div class="skill-realisation">Développement & BDD (Python + bases de données SQL)</div><div class="skill-meta">05/09/2024 – 31/05/2026 · Formation</div></div></div>
+    <div class="skill-item"><div class="skill-dot dot-cyan"></div><div><div class="skill-realisation">Gestion de politiques SASI (Proxy + Firewall)</div><div class="skill-meta">02/06/2025 – 06/06/2025 · Stage 1 ACKnowledge</div></div></div>
+    <div class="skill-item"><div class="skill-dot dot-cyan"></div><div><div class="skill-realisation">Déploiement d'environnements virtuels (Windows client / Serveurs Linux)</div><div class="skill-meta">02/06/2025 – 27/06/2025 · Stage 1 ACKnowledge</div></div></div>
+    <div class="skill-item"><div class="skill-dot dot-purple"></div><div><div class="skill-realisation">Traitement des emails et boîtes électroniques des utilisateurs</div><div class="skill-meta">02/02/2026 – 13/03/2026 · Stage 2 Tereos</div></div></div>
+    <div class="skill-item"><div class="skill-dot dot-purple"></div><div><div class="skill-realisation">Lancement de scans sur les machines des utilisateurs de Tereos</div><div class="skill-meta">02/03/2026 – 13/03/2026 · Stage 2 Tereos</div></div></div>
+  </div>
+
+  <!-- BLOC 6 -->
+  <div class="glass-card skill-block">
+    <div class="skill-header">
+      <div class="skill-num">⑥</div>
+      <div><div class="skill-title">Organiser son développement professionnel</div><div class="skill-subtitle">Environnement d'apprentissage · Veille informationnelle · Identité professionnelle · Projet professionnel</div></div>
+    </div>
+    <div class="skill-item"><div class="skill-dot dot-blue"></div><div><div class="skill-realisation">Conception d'un portfolio retraçant les deux années de BTS et les stages effectués</div><div class="skill-meta">05/09/2024 – 31/05/2026 · Formation</div></div></div>
+    <div class="skill-item"><div class="skill-dot dot-cyan"></div><div><div class="skill-realisation">Déploiement d'environnements virtuels afin de réaliser des tests (Windows client / Serveurs Linux)</div><div class="skill-meta">02/06/2025 – 27/06/2025 · Stage 1 ACKnowledge</div></div></div>
+    <div class="skill-item"><div class="skill-dot dot-purple"></div><div><div class="skill-realisation">Découverte et approche du CAB (réunion hebdomadaire Infrastructures & Cybersécurité)</div><div class="skill-meta">19/01/2026 – 13/03/2026 · Stage 2 Tereos</div></div></div>
+    <div class="skill-item"><div class="skill-dot dot-purple"></div><div><div class="skill-realisation">Spectateur d'un pentest réalisé afin de détecter les failles dans le SI de Tereos</div><div class="skill-meta">02/02/2026 – 06/02/2026 · Stage 2 Tereos</div></div></div>
+    <div class="skill-item"><div class="skill-dot dot-purple"></div><div><div class="skill-realisation">Lancement d'une campagne de phishing simulée pour tester les utilisateurs</div><div class="skill-meta">06/03/2026 – 13/03/2026 · Stage 2 Tereos</div></div></div>
+  </div>
+</div>
+
+<!-- ===================================================== VEILLE -->
+<div id="veille-section" class="tab-panel">
+  <div class="section-subtitle">Veille technologique — Cybersécurité email</div>
+  <h2 class="section-title" data-text="Veille Technologique">Veille Technologique</h2>
+
+  <div class="veille-theme-card">
+    <div class="section-subtitle" style="margin-bottom:.6rem;">Thème de veille</div>
+    <div style="font-family:var(--font-head);font-weight:700;font-size:1.1rem;color:#fff;margin-bottom:.8rem;">Nouvelles méthodes de lutte contre l'usurpation d'adresses email</div>
+    <div class="veille-why">
+      <div class="veille-why-title">// Pourquoi cette veille ?</div>
+      <p style="font-size:.84rem;color:var(--text-dim);line-height:1.65;">Dans le cadre de mon stage chez Tereos, j'ai développé des solutions contre l'usurpation d'email. Cette veille me permet de rester informé des innovations en protocoles d'authentification <strong style="color:var(--blue)">SPF, DKIM, DMARC, BIMI</strong> et de l'usage de l'IA pour la détection du phishing.</p>
+    </div>
+    <div style="margin-top:1rem;">
+      <div style="font-family:var(--font-mono);font-size:.7rem;color:var(--text-muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.6rem;">// Sources</div>
+      <div class="sources-row">
+        <span class="source-chip">Google Alertes</span>
+        <span class="source-chip">ANSSI</span>
+        <span class="source-chip">CERT-FR</span>
+        <span class="source-chip">Cloudflare Blog</span>
+        <span class="source-chip">Proofpoint</span>
+        <span class="source-chip">Sekoia</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="glass-card" style="padding:1.5rem 1.8rem;">
+    <div class="flux-header">
+      <div class="live-indicator">
+        <span class="live-dot"></span>
+        <span class="flux-title">Actualités en direct</span>
+        <span class="last-update" id="last-update"></span>
+      </div>
+      <div class="filter-row">
+        <button onclick="filterNews('all')"           id="filter-all"           class="filter-btn active-filter">Tout</button>
+        <button onclick="filterNews('phishing')"      id="filter-phishing"      class="filter-btn">Phishing</button>
+        <button onclick="filterNews('dmarc')"         id="filter-dmarc"         class="filter-btn">DMARC/SPF</button>
+        <button onclick="filterNews('usurpation')"    id="filter-usurpation"    class="filter-btn">Usurpation</button>
+        <button onclick="filterNews('compromission')" id="filter-compromission" class="filter-btn">Compromission</button>
+        <button onclick="filterNews('contre')"        id="filter-contre"        class="filter-btn">Contre-mesures</button>
+        <button onclick="loadNews()" class="refresh-btn">↻ Actualiser</button>
+      </div>
+    </div>
+    <div id="news-loading" style="display:flex;align-items:center;justify-content:center;gap:.75rem;padding:3rem 0;color:var(--text-muted);">
+      <span class="spinner"></span><span style="font-family:var(--font-mono);font-size:.78rem;">Chargement des actualités…</span>
+    </div>
+    <div id="news-container" style="display:none;"></div>
+    <div id="news-empty" style="display:none;text-align:center;padding:2rem;font-family:var(--font-mono);font-size:.78rem;color:var(--text-muted);">Aucun résultat pour ce filtre.</div>
+  </div>
+</div>
+
+<!-- ===================================================== FUTUR -->
+<div id="future-section" class="tab-panel">
+  <div class="section-subtitle">Parcours envisagé après le BTS</div>
+  <h2 class="section-title" data-text="Projets Futurs">Projets Futurs</h2>
+
+  <div class="glass-card" style="padding:1.8rem 2rem; margin-bottom:1.5rem;">
+    <div style="font-family:var(--font-head);font-weight:700;font-size:1.2rem;margin-bottom:1.2rem;color:#fff;">Parcours Post-BTS</div>
+
+    <div class="option-card option-blue">
+      <span class="option-num opt-num-blue">Option 01</span>
+      <div class="option-title">BUT 3 Réseaux et Télécommunications — option Cybersécurité</div>
+      <div class="option-desc">Intégrer la troisième année de BUT RT avec spécialisation Cybersécurité, en contrat d'apprentissage. Formation d'un an (Bac+3) permettant de consolider les compétences en administration réseau et sécurité tout en acquérant une expérience significative en entreprise.</div>
+      <div class="option-chips">
+        <span class="chip-blue">Bac+3</span><span class="chip-cyan">Apprentissage</span><span class="chip-blue">1 an</span><span class="chip-cyan">Fin : 2027</span>
+      </div>
+    </div>
+
+    <div class="option-card option-blue">
+      <span class="option-num opt-num-blue">Option 02</span>
+      <div class="option-title">Licence Professionnelle Métiers des Réseaux — Pa. ASSR</div>
+      <div class="option-desc">Licence Pro parcours Administration et Sécurité des Systèmes et Réseaux, en contrat d'apprentissage. Formation d'un an (Bac+3) offrant une spécialisation en sécurité des systèmes — voie directe vers des postes d'administrateur réseau ou technicien cybersécurité.</div>
+      <div class="option-chips">
+        <span class="chip-blue">Bac+3</span><span class="chip-cyan">Apprentissage</span><span class="chip-blue">1 an</span><span class="chip-cyan">Fin : 2027</span>
+      </div>
+    </div>
+
+    <div class="option-card option-purple">
+      <span class="option-num opt-num-purple">Option 03</span>
+      <div class="option-title">Mastère CARE (1 an) → Master 2 Ingénierie des Réseaux et des Systèmes</div>
+      <div class="option-desc">Mastère CARE (Cybersécurité, Architectures, Réseaux d'Entreprise) en apprentissage, passerelle directe vers un Master 2 IRS également en apprentissage. Parcours Bac+4 puis Bac+5 pour atteindre le niveau ingénieur avec une spécialisation en cybersécurité et architectures réseau avancées.</div>
+      <div class="option-chips">
+        <span class="chip-purple">Bac+4 → Bac+5</span><span class="chip-blue">Apprentissage</span><span class="chip-purple">2 ans</span><span class="chip-blue">Fin : 2028</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="glass-card" style="padding:1.8rem 2rem;">
+    <div style="font-family:var(--font-head);font-weight:700;font-size:1.2rem;margin-bottom:1.2rem;color:#fff;">Objectif Professionnel</div>
+    <div class="goal-banner">
+      <div>
+        <span class="goal-pill goal-pill-1">Ingénieur en Cybersécurité</span>
+        <span class="goal-or">— ou —</span>
+        <span class="goal-pill goal-pill-2">Ingénieur Réseaux</span>
+      </div>
+      <p class="goal-desc">Contribuer à la protection des systèmes d'information et à la conception d'architectures réseau sécurisées et performantes, en appliquant les meilleures pratiques du secteur.</p>
+    </div>
+
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-year" style="color:var(--blue);">2026</div>
+        <div class="timeline-label">Diplôme BTS SIO SISR</div>
+        <div class="timeline-sub">+ Licence STAPS</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year" style="color:var(--cyan);">2027</div>
+        <div class="timeline-label">BUT 3 RT Cybersécurité</div>
+        <div class="timeline-sub">ou Licence Pro ASSR</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year" style="color:var(--purple);">2027–28</div>
+        <div class="timeline-label">Mastère CARE</div>
+        <div class="timeline-sub">En apprentissage</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year" style="color:var(--green);">2028+</div>
+        <div class="timeline-label">Master 2 IRS</div>
+        <div class="timeline-sub">Ingénieur Cyber / Réseaux</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  <span>Yacine Ferjani</span> · Portfolio BTS SIO SISR · Lycée Voillaume, Aulnay-sous-Bois · © 2025
+</footer>
+
+<script>
+/* ===================================================== CANVAS BACKGROUND */
+var canvas = document.getElementById('bg-canvas');
+var ctx = canvas.getContext('2d');
+function resize(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+resize();
+window.addEventListener('resize', resize);
+
+var nodes = [];
+for(var i=0;i<60;i++){
+  nodes.push({
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height,
+    r: Math.random()*2+.5,
+    vx:(Math.random()-.5)*.35,
+    vy:(Math.random()-.5)*.35,
+    op:Math.random()*.4+.15
+  });
+}
+function drawBg(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  for(var i=0;i<nodes.length;i++){
+    var n=nodes[i];
+    n.x+=n.vx; n.y+=n.vy;
+    if(n.x<0)n.x=canvas.width; if(n.x>canvas.width)n.x=0;
+    if(n.y<0)n.y=canvas.height; if(n.y>canvas.height)n.y=0;
+    ctx.beginPath();
+    ctx.arc(n.x,n.y,n.r,0,Math.PI*2);
+    ctx.fillStyle='rgba(56,189,248,'+n.op+')';
+    ctx.fill();
+    for(var j=i+1;j<nodes.length;j++){
+      var m=nodes[j];
+      var dx=n.x-m.x, dy=n.y-m.y, d=Math.sqrt(dx*dx+dy*dy);
+      if(d<130){
+        ctx.beginPath();
+        ctx.moveTo(n.x,n.y); ctx.lineTo(m.x,m.y);
+        ctx.strokeStyle='rgba(56,189,248,'+(0.12*(1-d/130))+')';
+        ctx.lineWidth=.8; ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(drawBg);
+}
+drawBg();
+
+/* ===================================================== VEILLE */
+var currentFilter='all', allNews=[], newsLoaded=false;
+var NEWS_DB=[
+  {id:1,tag:'phishing',date:'2025-03-18',source:'CERT-FR',impact:'Élevé',
+   title:'Campagne de phishing ciblant les identifiants Microsoft 365',
+   summary:'Une nouvelle vague d\'attaques sophistiquées exploite de fausses pages de connexion Microsoft 365 pour dérober des identifiants d\'entreprises françaises. Les attaquants contournent la MFA via des proxies AiTM (Adversary-in-the-Middle) en temps réel.',
+   link:'https://www.cert.ssi.gouv.fr'},
+  {id:2,tag:'dmarc',date:'2025-03-15',source:'Cloudflare Blog',impact:'Moyen',
+   title:'Google & Yahoo renforcent les exigences DMARC pour les grands expéditeurs',
+   summary:'Tout expéditeur envoyant plus de 5 000 emails/jour doit désormais configurer SPF, DKIM et DMARC avec une politique minimum "p=none". Les emails non conformes sont rejetés ou redirigés en spam.',
+   link:'https://blog.cloudflare.com'},
+  {id:3,tag:'usurpation',date:'2025-03-12',source:'ANSSI',impact:'Élevé',
+   title:'Usurpation d\'identité par BEC en hausse de 45% en France',
+   summary:'L\'ANSSI signale une hausse de 45% des attaques BEC. Les cybercriminels usurpent l\'identité de dirigeants ou fournisseurs pour ordonner des virements frauduleux. Les PME restent les cibles prioritaires.',
+   link:'https://www.ssi.gouv.fr'},
+  {id:4,tag:'contre',date:'2025-03-10',source:'BIMI Group',impact:'Préventif',
+   title:'BIMI : le standard visuel anti-usurpation adopté par 30% des grandes entreprises',
+   summary:'BIMI (Brand Indicators for Message Identification) affiche le logo officiel dans les clients de messagerie. Il complète efficacement DMARC en rendant les tentatives d\'usurpation visuellement détectables par les destinataires.',
+   link:'https://bimigroup.org'},
+  {id:5,tag:'compromission',date:'2025-03-08',source:'Have I Been Pwned',impact:'Élevé',
+   title:'Bilan 2024 : 2,1 milliards de comptes exposés',
+   summary:'Le bilan annuel recense plus de 2,1 milliards de comptes compromis. Les combinaisons email/mot de passe sont revendues sur le darkweb et utilisées pour des attaques par credential stuffing contre les messageries d\'entreprise.',
+   link:'https://haveibeenpwned.com'},
+  {id:6,tag:'dmarc',date:'2025-03-05',source:'Proofpoint',impact:'Technique',
+   title:'SPF : la limite de 10 lookups DNS souvent dépassée',
+   summary:'34% des organisations dépassent la limite DNS de 10 lookups SPF, rendant leurs enregistrements invalides. Des outils de "SPF flattening" permettent de corriger ce problème.',
+   link:'https://www.proofpoint.com'},
+  {id:7,tag:'contre',date:'2025-03-02',source:'ANSSI',impact:'Préventif',
+   title:'Guide DMARC : migrer vers "p=reject" sans interruption de service',
+   summary:'L\'ANSSI publie un guide opérationnel pour migrer progressivement vers une politique DMARC stricte en 4 étapes : monitoring, quarantine partielle, quarantine totale, rejet. Chaque étape s\'appuie sur les rapports RUA/RUF.',
+   link:'https://www.ssi.gouv.fr'},
+  {id:8,tag:'phishing',date:'2025-02-28',source:'Sekoia',impact:'Élevé',
+   title:'Phishing-as-a-Service : des kits clé en main pour contourner la MFA',
+   summary:'Les plateformes PhaaS comme "Tycoon 2FA" proposent des kits intégrant des proxies AiTM capables d\'intercepter les sessions OTP en temps réel, rendant les attaques accessibles à des acteurs peu techniques.',
+   link:'https://www.sekoia.io'},
+  {id:9,tag:'compromission',date:'2025-02-25',source:'Microsoft Security Blog',impact:'Critique',
+   title:'Token hijacking : bypasser la MFA post-authentification',
+   summary:'Microsoft documente une technique de vol de tokens d\'authentification permettant de contourner la MFA même après connexion légitime. L\'attaquant récupère le cookie de session via malware ou proxy.',
+   link:'https://www.microsoft.com/security'},
+  {id:10,tag:'contre',date:'2025-02-20',source:'Cloudflare',impact:'Technique',
+   title:'DKIM + ARC : renforcer la traçabilité des emails transférés',
+   summary:'La combinaison DKIM et ARC (Authenticated Received Chain) renforce la traçabilité des messages dans les chaînes de transfert complexes. Toute modification en transit est immédiatement détectable.',
+   link:'https://blog.cloudflare.com'}
+];
+
+var TAG_STYLES={
+  phishing:{label:'Phishing',cls:'tag-phishing'},
+  dmarc:{label:'DMARC/SPF/DKIM',cls:'tag-dmarc'},
+  usurpation:{label:'Usurpation',cls:'tag-usurpation'},
+  compromission:{label:'Compromission',cls:'tag-compromission'},
+  contre:{label:'Contre-mesures',cls:'tag-contre'}
+};
+var IMPACT_COLOR={'Élevé':'color:var(--red)','Critique':'color:var(--red);font-weight:700','Moyen':'color:var(--yellow)','Préventif':'color:var(--green)','Technique':'color:var(--blue)'};
+
+function fmtDate(s){ return new Date(s).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'}); }
+
+function renderCard(item){
+  var t=TAG_STYLES[item.tag]||{label:item.tag,cls:'tag-dmarc'};
+  var ic=IMPACT_COLOR[item.impact]||'color:var(--text-muted)';
+  return '<div class="news-card">'
+    +'<div class="news-header"><div class="news-tags">'
+    +'<span class="news-tag '+t.cls+'">'+t.label+'</span>'
+    +'<span class="news-source">'+item.source+'</span>'
+    +'<span class="news-date">'+fmtDate(item.date)+'</span>'
+    +'</div><span class="news-impact" style="'+ic+'">⚡ '+item.impact+'</span></div>'
+    +'<div class="news-title">'+item.title+'</div>'
+    +'<div class="news-summary">'+item.summary+'</div>'
+    +'<a href="'+item.link+'" target="_blank" class="news-link">→ Lire la source</a>'
+    +'</div>';
+}
+
+function filterNews(tag){
+  currentFilter=tag;
+  document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active-filter');});
+  var btn=document.getElementById('filter-'+tag);
+  if(btn) btn.classList.add('active-filter');
+  var list=tag==='all'?allNews:allNews.filter(function(n){return n.tag===tag;});
+  var cont=document.getElementById('news-container');
+  var empty=document.getElementById('news-empty');
+  if(list.length===0){cont.style.display='none';empty.style.display='block';}
+  else{empty.style.display='none';cont.style.display='block';cont.innerHTML=list.map(renderCard).join('');}
+}
+
+function loadNews(){
+  newsLoaded=false;
+  document.getElementById('news-loading').style.display='flex';
+  document.getElementById('news-container').style.display='none';
+  document.getElementById('news-empty').style.display='none';
+  setTimeout(function(){
+    allNews=NEWS_DB.slice().sort(function(a,b){return new Date(b.date)-new Date(a.date);});
+    newsLoaded=true;
+    document.getElementById('news-loading').style.display='none';
+    var now=new Date();
+    document.getElementById('last-update').textContent='· mis à jour '+now.toLocaleDateString('fr-FR')+' à '+now.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+    filterNews(currentFilter);
+  },900);
+}
+
+loadNews();
+setInterval(function(){ loadNews(); }, 5*60*1000);
+</script>
+</body>
+</html>
